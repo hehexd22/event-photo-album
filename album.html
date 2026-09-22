@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Photo Album</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5f2;
+            color: #222;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px 20px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        header p {
+            color: #777;
+        }
+
+        .gallery {
+            width: 94%;
+            max-width: 1100px;
+            margin: 20px auto 40px;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .photo {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background: #ddd;
+            border-radius: 5px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: #888;
+        }
+
+        .back {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 40px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        @media (min-width: 700px) {
+            .gallery {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <h1>🖼️ Our Event</h1>
+
+        <p>Moments shared by everyone</p>
+
+    </header>
+
+    <div class="gallery" id="gallery">
+
+        <div class="empty">
+            Photos will appear here once guests upload them.
+        </div>
+
+    </div>
+
+    <a href="index.html" class="back">
+        ← Back to Home
+    </a>
+
+</body>
+</html>
