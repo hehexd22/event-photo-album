@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Photos</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #f7f5f2;
+            color: #222;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .upload-box {
+            background: white;
+            border: 2px dashed #bbb;
+            border-radius: 16px;
+            padding: 35px 20px;
+            margin: 30px 0;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+        }
+
+        .upload-button {
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 12px;
+            background: #222;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📷 Upload Your Photos</h1>
+
+        <p>
+            Share your favourite moments from the event!
+        </p>
+
+        <div class="upload-box">
+
+            <input
+                type="file"
+                id="photos"
+                accept="image/*"
+                multiple
+            >
+
+            <br><br>
+
+            <button class="upload-button">
+                Upload Photos
+            </button>
+
+        </div>
+
+        <div class="note">
+            Photos only • No account required
+        </div>
+
+        <a href="index.html" class="back">
+            ← Back
+        </a>
+
+    </div>
+
+</body>
+</html>
