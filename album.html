@@ -77,15 +77,16 @@ display: none;
 position: fixed;
 z-index: 999;
 inset: 0;
-background: rgba(0, 0, 0, 0.9);
+background: rgba(0, 0, 0, 0.92);
 justify-content: center;
 align-items: center;
+flex-direction: column;
 padding: 20px;
 }
 
 .viewer img {
 max-width: 100%;
-max-height: 90vh;
+max-height: 75vh;
 object-fit: contain;
 border-radius: 5px;
 }
@@ -98,6 +99,22 @@ color: white;
 font-size: 40px;
 cursor: pointer;
 line-height: 1;
+}
+
+.download-button {
+margin-top: 20px;
+padding: 14px 24px;
+border: none;
+border-radius: 10px;
+background: white;
+color: #222;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+}
+
+.download-button:active {
+transform: scale(0.97);
 }
 </style>
 </head>
@@ -119,9 +136,17 @@ Loading photos...
 ← Back to Home
 </a>
 
+<!-- Full-screen viewer -->
 <div id="viewer" class="viewer">
+
 <span class="close" id="close">&times;</span>
+
 <img id="viewerImage" src="" alt="Photo">
+
+<button class="download-button" id="downloadButton">
+⬇ Download Photo
+</button>
+
 </div>
 
 <script>
@@ -133,6 +158,10 @@ const status = document.getElementById("status");
 const viewer = document.getElementById("viewer");
 const viewerImage = document.getElementById("viewerImage");
 const close = document.getElementById("close");
+const downloadButton =
+document.getElementById("downloadButton");
+
+let currentPhotoUrl = "";
 
 async function loadPhotos() {
 try {
@@ -161,7 +190,9 @@ photos.length +
 : " photos");
 
 photos.forEach(photo => {
-const img = document.createElement("img");
+
+const img =
+document.createElement("img");
 
 img.className = "photo";
 img.src = photo.url;
@@ -169,7 +200,12 @@ img.alt = "Event photo";
 img.loading = "lazy";
 
 img.addEventListener("click", () => {
-viewerImage.src = photo.url;
+
+currentPhotoUrl = photo.url;
+
+viewerImage.src =
+currentPhotoUrl;
+
 viewer.style.display = "flex";
 });
 
@@ -177,6 +213,7 @@ gallery.appendChild(img);
 });
 
 } catch (error) {
+
 console.error(error);
 
 status.textContent =
@@ -184,15 +221,75 @@ status.textContent =
 }
 }
 
+downloadButton.addEventListener("click", async () => {
+
+if (!currentPhotoUrl) {
+return;
+}
+
+try {
+
+const response =
+await fetch(currentPhotoUrl);
+
+if (!response.ok) {
+throw new Error("Download failed");
+}
+
+const blob =
+await response.blob();
+
+const blobUrl =
+URL.createObjectURL(blob);
+
+const link =
+document.createElement("a");
+
+link.href = blobUrl;
+link.download = "event-photo.jpg";
+
+document.body.appendChild(link);
+
+link.click();
+
+link.remove();
+
+URL.revokeObjectURL(blobUrl);
+
+} catch (error) {
+
+console.error(error);
+
+/*
+* Fallback for mobile browsers.
+* Opens the original photo so the
+* user can save it manually.
+*/
+window.open(
+currentPhotoUrl,
+"_blank"
+);
+}
+});
+
 close.addEventListener("click", () => {
+
 viewer.style.display = "none";
+
 viewerImage.src = "";
+
+currentPhotoUrl = "";
 });
 
 viewer.addEventListener("click", (event) => {
+
 if (event.target === viewer) {
+
 viewer.style.display = "none";
+
 viewerImage.src = "";
+
+currentPhotoUrl = "";
 }
 });
 
