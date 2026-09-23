@@ -63,6 +63,11 @@
             cursor: pointer;
         }
 
+        .upload-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .back {
             display: inline-block;
             margin-top: 20px;
@@ -114,6 +119,55 @@
         </a>
 
     </div>
+
+    <script>
+        const uploadButton = document.querySelector(".upload-button");
+        const photoInput = document.getElementById("photos");
+
+        uploadButton.addEventListener("click", async () => {
+            const files = photoInput.files;
+
+            if (files.length === 0) {
+                alert("Please select at least one photo.");
+                return;
+            }
+
+            uploadButton.disabled = true;
+            uploadButton.textContent = "Uploading...";
+
+            for (const file of files) {
+                try {
+                    const response = await fetch(
+                        "https://event-photo-api.wzc0989.workers.dev/upload",
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": file.type
+                            },
+                            body: file
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Upload failed");
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    alert("One or more photos failed to upload.");
+                    uploadButton.disabled = false;
+                    uploadButton.textContent = "Upload Photos";
+                    return;
+                }
+            }
+
+            alert("Photos uploaded successfully! 🎉");
+
+            photoInput.value = "";
+            uploadButton.disabled = false;
+            uploadButton.textContent = "Upload Photos";
+        });
+    </script>
 
 </body>
 </html>
