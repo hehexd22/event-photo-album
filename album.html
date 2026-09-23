@@ -1,99 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Photo Album</title>
+<title>Event Photo Album</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+* {
+box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f7f5f2;
-            color: #222;
-        }
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: #f7f5f2;
+color: #222;
+}
 
-        header {
-            text-align: center;
-            padding: 30px 20px 20px;
-        }
+header {
+text-align: center;
+padding: 35px 20px 20px;
+}
 
-        h1 {
-            margin: 0 0 8px;
-            font-size: 30px;
-        }
+h1 {
+margin: 0 0 10px;
+font-size: 30px;
+}
 
-        header p {
-            color: #777;
-        }
+header p {
+margin: 0;
+color: #777;
+}
 
-        .gallery {
-            width: 94%;
-            max-width: 1100px;
-            margin: 20px auto 40px;
+.gallery {
+width: 94%;
+max-width: 1100px;
+margin: 25px auto 50px;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+}
 
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
+.photo {
+width: 100%;
+aspect-ratio: 1 / 1;
+object-fit: cover;
+border-radius: 10px;
+background: #ddd;
+cursor: pointer;
+}
 
-        .photo {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            background: #ddd;
-            border-radius: 5px;
-        }
+.status {
+text-align: center;
+padding: 30px 20px;
+color: #777;
+}
 
-        .empty {
-            text-align: center;
-            padding: 80px 20px;
-            color: #888;
-        }
+.back {
+display: block;
+width: fit-content;
+margin: 0 auto 40px;
+color: #666;
+text-decoration: none;
+}
 
-        .back {
-            display: block;
-            width: fit-content;
-            margin: 0 auto 40px;
-            color: #666;
-            text-decoration: none;
-        }
+@media (min-width: 700px) {
+.gallery {
+grid-template-columns: repeat(4, 1fr);
+}
+}
 
-        @media (min-width: 700px) {
-            .gallery {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 8px;
-            }
-        }
-    </style>
+/* Full-screen photo viewer */
+.viewer {
+display: none;
+position: fixed;
+z-index: 999;
+inset: 0;
+background: rgba(0, 0, 0, 0.9);
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+
+.viewer img {
+max-width: 100%;
+max-height: 90vh;
+object-fit: contain;
+border-radius: 5px;
+}
+
+.close {
+position: absolute;
+top: 15px;
+right: 20px;
+color: white;
+font-size: 40px;
+cursor: pointer;
+line-height: 1;
+}
+</style>
 </head>
 
 <body>
 
-    <header>
+<header>
+<h1>📷 Event Photo Album</h1>
+<p>Memories shared by everyone</p>
+</header>
 
-        <h1>🖼️ Our Event</h1>
+<div id="status" class="status">
+Loading photos...
+</div>
 
-        <p>Moments shared by everyone</p>
+<div id="gallery" class="gallery"></div>
 
-    </header>
+<a href="index.html" class="back">
+← Back to Home
+</a>
 
-    <div class="gallery" id="gallery">
+<div id="viewer" class="viewer">
+<span class="close" id="close">&times;</span>
+<img id="viewerImage" src="" alt="Photo">
+</div>
 
-        <div class="empty">
-            Photos will appear here once guests upload them.
-        </div>
+<script>
+const API_URL =
+"https://event-photo-api.wzc0989.workers.dev";
 
-    </div>
+const gallery = document.getElementById("gallery");
+const status = document.getElementById("status");
+const viewer = document.getElementById("viewer");
+const viewerImage = document.getElementById("viewerImage");
+const close = document.getElementById("close");
 
-    <a href="index.html" class="back">
-        ← Back to Home
-    </a>
+async function loadPhotos() {
+try {
+const response = await fetch(
+API_URL + "/photos"
+);
+
+if (!response.ok) {
+throw new Error("Failed to load photos");
+}
+
+const photos = await response.json();
+
+gallery.innerHTML = "";
+
+if (photos.length === 0) {
+status.textContent =
+"No photos have been uploaded yet.";
+return;
+}
+
+status.textContent =
+photos.length +
+(photos.length === 1
+? " photo"
+: " photos");
+
+photos.forEach(photo => {
+const img = document.createElement("img");
+
+img.className = "photo";
+img.src = photo.url;
+img.alt = "Event photo";
+img.loading = "lazy";
+
+img.addEventListener("click", () => {
+viewerImage.src = photo.url;
+viewer.style.display = "flex";
+});
+
+gallery.appendChild(img);
+});
+
+} catch (error) {
+console.error(error);
+
+status.textContent =
+"Unable to load photos. Please try again.";
+}
+}
+
+close.addEventListener("click", () => {
+viewer.style.display = "none";
+viewerImage.src = "";
+});
+
+viewer.addEventListener("click", (event) => {
+if (event.target === viewer) {
+viewer.style.display = "none";
+viewerImage.src = "";
+}
+});
+
+loadPhotos();
+</script>
 
 </body>
 </html>
